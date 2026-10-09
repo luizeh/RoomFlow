@@ -49,7 +49,8 @@ export default function AdminReservationForm() {
         try {
             await updateAdminReservation(id, { ...form, room_id: Number(form.room_id) });
             notify('Reserva atualizada.');
-            navigate('/admin/reservations');
+            // Volta para a agenda da sala onde a reserva ficou
+            navigate(`/admin/reservations?sala=${form.room_id}`);
         } catch (err) {
             if (err.validationErrors) {
                 setFieldErrors(err.validationErrors);
@@ -61,13 +62,16 @@ export default function AdminReservationForm() {
         }
     }
 
+    // Voltar/Cancelar levam para a agenda da sala original da reserva
+    const backUrl = reservation ? `/admin/reservations?sala=${reservation.room_id}` : '/admin/reservations';
+
     if (notFound) return <NotFound />;
     if (loadError || roomsError) return <main className="page page-narrow"><p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>Ocorreu um erro: {loadError || roomsError}</p></main>;
     if (!form || loadingRooms) return <p className="state">Carregando reserva...</p>;
 
     return (
         <main className="page page-narrow">
-            <Link to="/admin/reservations" className="back-link"><i className="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar para reservas</Link>
+            <Link to={backUrl} className="back-link"><i className="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar para reservas</Link>
             <header className="page-header">
                 <div>
                     <h1 className="page-title">Editar reserva #{reservation.id}</h1>
@@ -107,7 +111,7 @@ export default function AdminReservationForm() {
                     <button type="submit" className="btn btn-primary" disabled={saving}>
                         {saving ? 'Salvando...' : <><i className="fa-solid fa-check" aria-hidden="true"></i> Salvar reserva</>}
                     </button>
-                    <Link to="/admin/reservations" className="btn btn-secondary">Cancelar</Link>
+                    <Link to={backUrl} className="btn btn-secondary">Cancelar</Link>
                 </div>
             </form>
         </main>

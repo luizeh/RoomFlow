@@ -70,6 +70,34 @@ export async function confirmDialog({
     return result.isConfirmed;
 }
 
+// Janela com duas ações + cancelar (ex.: Editar / Excluir).
+// Retorna 'confirm' (primeira ação), 'deny' (segunda ação, em vermelho) ou null.
+export async function actionDialog({ title, text, icon = 'info', confirmText, denyText, cancelText = 'Fechar' }) {
+    const result = await baseAlert.fire({
+        title,
+        text,
+        icon,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: confirmText,
+        denyButtonText: denyText,
+        cancelButtonText: cancelText,
+        reverseButtons: false,
+        customClass: {
+            popup: 'swal-popup',
+            title: 'swal-title',
+            htmlContainer: 'swal-text',
+            actions: 'swal-actions',
+            confirmButton: 'btn btn-primary',
+            denyButton: 'btn btn-danger',
+            cancelButton: 'btn btn-secondary',
+        },
+    });
+    if (result.isConfirmed) return 'confirm';
+    if (result.isDenied) return 'deny';
+    return null;
+}
+
 // Janela de aviso com um botão só (ex.: conta criada com sucesso)
 export function alertDialog({ title, text, icon = 'success', confirmText = 'OK', timer }) {
     return baseAlert.fire({

@@ -10,3 +10,9 @@ export function getRooms() {
 export function getRoom(id) {
     return api.get(`/rooms/${id}`);
 }
+
+// Agenda da sala no período (start/end no formato "YYYY-MM-DD HH:mm:ss").
+// Usuário comum recebe só os horários ocupados; admin recebe também quem reservou.
+export function getRoomSchedule(id, start, end) {
+    return api.get(`/rooms/${id}/schedule`, { params: { start, end } });
+}

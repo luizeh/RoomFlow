@@ -1,0 +1,15 @@
+/* Painel admin: reservas com seletor de sala, agenda e lista */
+
+.room-picker {
+    width: min(100%, 320px);
+}
+
+.admin-schedule-card {
+    margin-bottom: 32px;
+}
+
+@media (max-width: 600px) {
+    .admin-schedule-card {
+        padding: 16px 12px;
+    }
+}

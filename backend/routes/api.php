@@ -34,6 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
 
     Route::apiResource('reservations', ReservationController::class);
+
+    // Agenda da sala (horários ocupados). Admin vê quem reservou; usuário comum vê só "ocupado".
+    Route::get('/rooms/{room}/schedule', [RoomController::class, 'schedule'])->name('rooms.schedule');
 });
 
 /*

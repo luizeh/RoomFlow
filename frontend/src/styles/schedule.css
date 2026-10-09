@@ -1,0 +1,129 @@
+/* Agenda da sala (FullCalendar, tema "classic") com as cores do site.
+   O FullCalendar marca a agenda com data-color-scheme="dark"; o :root na frente
+   deixa estas cores mais fortes que as do palette.css do próprio FullCalendar. */
+:root [data-color-scheme='dark'] {
+    --fc-classic-button: var(--color-input-bg);
+    --fc-classic-button-border: var(--color-border-strong);
+    --fc-classic-button-strong: rgba(255, 255, 255, 0.14);
+    --fc-classic-button-strong-border: rgba(255, 255, 255, 0.24);
+    --fc-classic-button-outline: rgba(255, 255, 255, 0.35);
+    --fc-classic-button-foreground: var(--color-text);
+
+    --fc-classic-primary: #e4e4e7;
+    --fc-classic-primary-foreground: #0b0b0c;
+    /* Cor da seleção enquanto o usuário arrasta (o padrão é azul) */
+    --fc-classic-event: #e4e4e7;
+    --fc-classic-event-contrast: #0b0b0c;
+
+    --fc-classic-highlight: rgba(74, 222, 128, 0.18);
+    --fc-classic-today: rgba(255, 255, 255, 0.03);
+    --fc-classic-now: var(--color-error);
+
+    --fc-classic-background: var(--color-surface);
+    --fc-classic-faint: rgba(255, 255, 255, 0.02);
+    --fc-classic-muted: rgba(255, 255, 255, 0.05);
+    --fc-classic-strong: rgba(255, 255, 255, 0.1);
+
+    --fc-classic-foreground: var(--color-text);
+    --fc-classic-faint-foreground: var(--color-subtle);
+    --fc-classic-muted-foreground: var(--color-muted);
+
+    --fc-classic-border: var(--color-border);
+    --fc-classic-strong-border: var(--color-border-strong);
+}
+
+/* Título acima da agenda (página da sala e painel admin) */
+.room-schedule-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-bottom: 20px;
+}
+
+.room-schedule-header .section-title {
+    margin-bottom: 0;
+}
+
+.room-schedule-header .muted {
+    font-size: 14px;
+}
+
+.room-schedule {
+    font-size: 14px;
+}
+
+.room-schedule .alert {
+    margin-bottom: 16px;
+}
+
+/* Campo "ir para a data" na barra da agenda */
+.schedule-date-picker {
+    display: inline-flex;
+    align-items: center;
+}
+
+.schedule-date-picker input {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius);
+    background: var(--color-input-bg);
+    font: inherit;
+    font-size: 14px;
+    color: var(--color-text);
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+.schedule-date-picker input:hover {
+    border-color: rgba(255, 255, 255, 0.24);
+}
+
+.schedule-date-picker input:focus-visible {
+    outline: 2px solid var(--color-input-focus);
+    outline-offset: 1px;
+}
+
+/* Legenda abaixo da agenda */
+.schedule-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.schedule-legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.schedule-legend i {
+    width: 14px;
+    text-align: center;
+    color: var(--color-subtle);
+}
+
+.schedule-legend-swatch {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 4px;
+}
+
+.schedule-legend-free {
+    background: var(--color-surface);
+}
+
+/* Mesmas cores de EVENT_COLORS em RoomSchedule.jsx */
+.schedule-legend-busy {
+    background: #3f3f46;
+}
+
+.schedule-legend-mine {
+    background: #e4e4e7;
+}
