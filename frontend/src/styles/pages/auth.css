@@ -1,0 +1,221 @@
+/* Telas de autenticação: cadastro (com imagem) e login (centralizado, fundo em SVG) */
+
+.auth-page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 48px 0;
+    overflow: hidden;
+    color: var(--color-text);
+}
+
+/* Marca */
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 48px;
+}
+
+.auth-brand-icon {
+    font-size: 56px;
+    line-height: 1;
+    color: #d4d4d8;
+}
+
+.auth-brand-name {
+    font-size: 46px;
+    font-weight: 400;
+    letter-spacing: -1px;
+}
+
+.auth-brand-name strong {
+    font-weight: 600;
+}
+
+/* Títulos */
+.auth-title {
+    margin-bottom: 12px;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    line-height: 1.2;
+}
+
+.auth-subtitle {
+    max-width: 420px;
+    margin-bottom: 40px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--color-muted);
+}
+
+.auth-page .alert {
+    margin-top: -16px;
+}
+
+.auth-footer {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+.auth-footer a {
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Cadastro: formulário à esquerda, imagem à direita ---------- */
+
+.auth-split {
+    background:
+        linear-gradient(90deg, rgba(11, 11, 12, 0.94) 0%, rgba(11, 11, 12, 0.9) 42%, rgba(11, 11, 12, 0.35) 54%, rgba(11, 11, 12, 0) 62%),
+        url('../../assets/images/auth-bg.png') right center / cover no-repeat var(--color-bg);
+}
+
+.auth-panel {
+    width: 100%;
+    max-width: 496px;
+    margin-left: clamp(24px, 7.8vw, 120px);
+}
+
+/* ---------- Login: card centralizado sobre o fundo decorativo ---------- */
+
+.auth-centered {
+    justify-content: center;
+    padding: 48px 20px;
+    background:
+        radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255, 255, 255, 0.05), transparent 70%),
+        var(--color-bg);
+}
+
+.auth-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    padding: 40px;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: rgba(18, 18, 20, 0.72);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.auth-card .auth-brand {
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.auth-card .auth-brand-icon {
+    font-size: 36px;
+}
+
+.auth-card .auth-brand-name {
+    font-size: 30px;
+}
+
+.auth-card .auth-title {
+    font-size: 28px;
+    text-align: center;
+}
+
+.auth-card .auth-subtitle {
+    margin: 0 auto 32px;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Fundo decorativo do login */
+.auth-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.auth-backdrop .float-slow {
+    animation: auth-float 14s ease-in-out infinite;
+}
+
+.auth-backdrop .float-fast {
+    animation: auth-float 10s ease-in-out infinite reverse;
+}
+
+.auth-backdrop .spin-slow {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: spin 60s linear infinite;
+}
+
+@keyframes auth-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-14px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-backdrop * {
+        animation: none !important;
+    }
+}
+
+/* ---------- Telas menores ---------- */
+
+@media (max-width: 900px) {
+    .auth-split {
+        padding: 40px 20px;
+        background:
+            linear-gradient(rgba(11, 11, 12, 0.88), rgba(11, 11, 12, 0.88)),
+            url('../../assets/images/auth-bg.png') 70% center / cover no-repeat var(--color-bg);
+    }
+
+    .auth-panel {
+        margin: 0 auto;
+    }
+
+    .auth-brand {
+        margin-bottom: 32px;
+    }
+
+    .auth-brand-icon {
+        font-size: 44px;
+    }
+
+    .auth-brand-name {
+        font-size: 36px;
+    }
+
+    .auth-title {
+        font-size: 32px;
+    }
+
+    .auth-subtitle {
+        font-size: 17px;
+        margin-bottom: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 28px 20px;
+    }
+
+    .auth-page .form-row {
+        grid-template-columns: 1fr;
+    }
+}

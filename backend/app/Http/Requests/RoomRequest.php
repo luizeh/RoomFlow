@@ -27,6 +27,7 @@ class RoomRequest extends FormRequest
             'capacity' => ['required', 'integer', 'min:1'],
             'location' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:5120'],
         ];
     }
 }
