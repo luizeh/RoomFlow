@@ -6,6 +6,7 @@ import useReservation from '../../hooks/useReservation';
 import useRooms from '../../hooks/useRooms';
 import { toDateTimeInput } from '../../utils/datetime';
 import FieldError from '../../components/FieldError';
+import { notify } from '../../utils/alerts';
 
 const emptyReservation = { room_id: '', start_at: '', end_at: '' };
 
@@ -50,6 +51,7 @@ export default function ReservationForm() {
             const savedReservation = isEditing
                 ? await updateReservation(id, reservation)
                 : await createReservation(reservation);
+            notify(isEditing ? 'Reserva atualizada.' : 'Reserva confirmada!');
             navigate(`/reservations/${savedReservation.id}`);
         } catch (err) {
             if (err.validationErrors) {

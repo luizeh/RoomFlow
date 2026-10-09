@@ -1,0 +1,107 @@
+/* SweetAlert2 com as cores do tema escuro do site */
+
+.swal2-container {
+    --swal2-backdrop: rgba(0, 0, 0, 0.65);
+    --swal2-background: var(--color-surface);
+    --swal2-color: var(--color-text);
+    --swal2-border: 1px solid var(--color-border-strong);
+    --swal2-border-radius: 16px;
+    --swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.25);
+    --swal2-outline: 0 0 0 2px var(--color-input-focus);
+    font-family: var(--font-sans);
+}
+
+.swal2-container.swal2-backdrop-show {
+    backdrop-filter: blur(4px);
+}
+
+/* Janela (confirmação / aviso) */
+.swal-popup {
+    width: min(420px, calc(100vw - 32px));
+    padding: 28px 24px 24px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.swal-title {
+    padding: 8px 0 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--color-text);
+}
+
+.swal-text {
+    padding: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-muted);
+}
+
+.swal-actions {
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.swal-actions .btn {
+    min-width: 120px;
+}
+
+/* Ícones mais discretos, no tom do site */
+.swal2-popup .swal2-icon {
+    margin-top: 8px;
+    transform: scale(0.8);
+}
+
+.swal2-popup .swal2-icon.swal2-warning {
+    border-color: rgba(250, 204, 21, 0.5);
+    color: #facc15;
+}
+
+.swal2-popup .swal2-icon.swal2-question,
+.swal2-popup .swal2-icon.swal2-info {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+}
+
+.swal2-popup .swal2-icon.swal2-success {
+    border-color: var(--color-success-border);
+    color: var(--color-success);
+}
+
+.swal2-popup .swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: var(--color-success);
+}
+
+.swal2-popup .swal2-icon.swal2-success .swal2-success-ring {
+    border-color: var(--color-success-border);
+}
+
+.swal2-popup .swal2-icon.swal2-error {
+    border-color: var(--color-error-border);
+    color: var(--color-error);
+}
+
+.swal2-popup .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+    background-color: var(--color-error);
+}
+
+/* Notificação no canto (toast) */
+.swal2-popup.swal-toast {
+    padding: 12px 16px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.swal-toast-title {
+    margin: 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.swal2-popup.swal-toast .swal2-icon {
+    margin: 0;
+    transform: none;
+}

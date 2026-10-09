@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/layouts/admin.css';
+import { confirmDialog, notify } from '../utils/alerts';
 
 const links = [
     { to: '/admin', label: 'Painel', icon: 'fa-gauge', end: true },
@@ -15,8 +16,18 @@ export default function AdminLayout() {
     const { user, logout } = useAuth();
 
     async function handleLogout() {
+        const confirmed = await confirmDialog({
+            title: 'Sair da conta?',
+            text: 'Você vai precisar entrar de novo para fazer reservas.',
+            icon: 'question',
+            confirmText: 'Sair',
+            danger: true,
+        });
+        if (!confirmed) return;
+
         try {
             await logout();
+            notify('Você saiu da conta.');
         } finally {
             navigate('/login');
         }

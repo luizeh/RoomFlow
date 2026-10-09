@@ -1,5 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import UserMenu from '../components/UserMenu';
+import { confirmDialog, notify } from '../utils/alerts';
 import '../styles/layouts/app.css';
 
 // Estrutura base das páginas do site: barra superior com navegação e conteúdo
@@ -8,8 +10,18 @@ export default function AppLayout() {
     const { user, loading, logout } = useAuth();
 
     async function handleLogout() {
+        const confirmed = await confirmDialog({
+            title: 'Sair da conta?',
+            text: 'Você vai precisar entrar de novo para fazer reservas.',
+            icon: 'question',
+            confirmText: 'Sair',
+            danger: true,
+        });
+        if (!confirmed) return;
+
         try {
             await logout();
+            notify('Você saiu da conta.');
         } finally {
             navigate('/login');
         }
@@ -27,19 +39,13 @@ export default function AppLayout() {
                     <nav className="app-nav">
                         <NavLink to="/rooms">Salas</NavLink>
                         {user && <NavLink to="/reservations">Minhas reservas</NavLink>}
-                        {user && <NavLink to="/profile">Perfil</NavLink>}
                         {user?.role === 'admin' && <NavLink to="/admin">Painel admin</NavLink>}
                     </nav>
 
                     {!loading && (
                         <div className="app-user">
                             {user ? (
-                                <>
-                                    <span className="app-user-name">{user.name}</span>
-                                    <button type="button" className="btn btn-ghost btn-sm" onClick={handleLogout}>
-                                        <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Sair
-                                    </button>
-                                </>
+                                <UserMenu user={user} onLogout={handleLogout} />
                             ) : (
                                 <>
                                     <Link to="/login" className="btn btn-ghost btn-sm">Entrar</Link>
