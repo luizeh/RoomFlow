@@ -67,13 +67,46 @@
     padding-top: 4px;
 }
 
-/* Detalhes da sala */
+/* Detalhes da sala: foto à esquerda e informações à direita (empilha em telas menores) */
+.room-detail.has-image {
+    display: grid;
+    grid-template-columns: minmax(0, 420px) 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
 .room-detail-image {
     display: block;
     width: 100%;
-    aspect-ratio: 16 / 9;
-    margin-bottom: 24px;
+    aspect-ratio: 4 / 3;
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     object-fit: cover;
+}
+
+.room-detail .detail-list {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+/* Agenda da sala */
+.room-schedule-card {
+    margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+    .room-detail.has-image {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .room-detail-image {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+@media (max-width: 600px) {
+    .room-schedule-card {
+        padding: 16px 12px;
+    }
 }

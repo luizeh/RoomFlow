@@ -5,10 +5,9 @@ export default function ReservationCard({ reservation, roomName, onDelete, delet
     return (
         <article className="card reservation-card">
             <div className="reservation-card-header">
-                <span className="icon-box"><i className="fa-regular fa-calendar-check" aria-hidden="true"></i></span>
+                <h3 className="reservation-card-title">{roomName || `Sala #${reservation.room_id}`}</h3>
                 <span className="badge">#{reservation.id}</span>
             </div>
-            <h3 className="reservation-card-title">{roomName || `Sala #${reservation.room_id}`}</h3>
             <ul className="meta-list time-range">
                 <li><i className="fa-regular fa-clock" aria-hidden="true"></i>Início: {formatDateTime(reservation.start_at)}</li>
                 <li><i className="fa-solid fa-flag-checkered" aria-hidden="true"></i>Fim: {formatDateTime(reservation.end_at)}</li>
