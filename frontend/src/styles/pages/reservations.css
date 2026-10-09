@@ -1,0 +1,23 @@
+/* Reservas: listagem em cards e detalhes */
+
+.reservation-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.reservation-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.reservation-card-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.reservation-card .card-actions {
+    padding-top: 4px;
+}

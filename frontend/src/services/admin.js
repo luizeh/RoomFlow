@@ -11,12 +11,25 @@ export function getAdminRooms() {
     return api.get('/admin/rooms');
 }
 
-export function createRoom(room) {
-    return api.post('/admin/rooms', room);
+// Salas são enviadas como multipart/form-data por causa da imagem.
+function toRoomFormData(room) {
+    const data = new FormData();
+    Object.entries(room).forEach(([key, value]) => {
+        if (value === null || value === undefined) return;
+        data.append(key, value);
+    });
+    return data;
 }
 
+export function createRoom(room) {
+    return api.post('/admin/rooms', toRoomFormData(room));
+}
+
+// O PHP não lê multipart em PUT, então enviamos POST com _method=PUT (method spoofing do Laravel)
 export function updateRoom(id, room) {
-    return api.put(`/admin/rooms/${id}`, room);
+    const data = toRoomFormData(room);
+    data.append('_method', 'PUT');
+    return api.post(`/admin/rooms/${id}`, data);
 }
 
 export function deleteRoom(id) {

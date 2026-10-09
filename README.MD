@@ -2,20 +2,22 @@
 
 ## Backend com Docker
 
-O backend requer PHP 8.4.1 ou superior. No Windows, use os atalhos abaixo na raiz do projeto para executar Composer e Artisan com o PHP 8.4 do container:
+O backend requer PHP 8.4.1 ou superior, que já vem no container. Por isso, rode `php artisan` e `composer` **dentro do container `backend`**, e não com o PHP instalado no Windows.
+
+Suba os containers:
 
 ```powershell
 docker compose up -d --build
-.\composer.ps1 dump-autoload
-.\artisan.ps1 make:request StoreRoomRequest
 ```
 
-Outros exemplos:
+Com os containers rodando, execute os comandos assim:
 
 ```powershell
-.\composer.ps1 install
-.\artisan.ps1 migrate
-.\artisan.ps1 route:list
+docker compose exec backend php artisan migrate
+docker compose exec backend php artisan route:list
+docker compose exec backend php artisan make:request StoreRoomRequest
+docker compose exec backend composer install
+docker compose exec backend composer dump-autoload
 ```
 
-Não execute `composer` diretamente no Windows enquanto o PHP local for 8.3; esse comando usa o PHP local, que não atende à versão exigida pelas dependências. Os atalhos do projeto executam os comandos dentro do serviço `backend`.
+Os arquivos criados pelo container (ex.: `make:request`) aparecem normalmente na pasta `backend/`, porque ela é compartilhada com o container por volume.
