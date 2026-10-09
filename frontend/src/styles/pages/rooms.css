@@ -1,13 +1,14 @@
 /* Salas: listagem em cards e detalhes */
 
 .room-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+    gap: 24px;
 }
 
-/* Card horizontal: imagem à esquerda, informações à direita */
+/* Card largo: foto em cima, informações embaixo */
 .room-card {
-    display: grid;
-    grid-template-columns: 220px 1fr;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     padding: 0;
     transition: border-color var(--transition), background-color var(--transition);
@@ -20,8 +21,8 @@
 
 .room-card-media {
     position: relative;
-    min-height: 220px;
-    border-right: 1px solid var(--color-border);
+    aspect-ratio: 16 / 9;
+    border-bottom: 1px solid var(--color-border);
     background: var(--color-input-bg);
 }
 
@@ -36,11 +37,12 @@
 .room-card-media .room-image-placeholder {
     position: absolute;
     inset: 0;
-    font-size: 32px;
+    font-size: 40px;
 }
 
 .room-card-body {
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 16px;
     min-width: 0;
@@ -48,7 +50,7 @@
 }
 
 .room-card-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
 }
 
@@ -63,19 +65,6 @@
 
 .room-card .card-actions {
     padding-top: 4px;
-}
-
-@media (max-width: 600px) {
-    .room-card {
-        grid-template-columns: 1fr;
-    }
-
-    .room-card-media {
-        min-height: 0;
-        aspect-ratio: 16 / 9;
-        border-right: 0;
-        border-bottom: 1px solid var(--color-border);
-    }
 }
 
 /* Detalhes da sala */

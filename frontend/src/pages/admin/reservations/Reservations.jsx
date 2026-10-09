@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { deleteAdminReservation, getAdminReservations } from '../../../services/admin';
 import { formatDateTime } from '../../../utils/datetime';
+import { confirmDialog, notify } from '../../../utils/alerts';
 
 export default function AdminReservations() {
     const [reservations, setReservations] = useState([]);
@@ -18,13 +19,20 @@ export default function AdminReservations() {
     }, []);
 
     async function handleDelete(reservation) {
-        if (!window.confirm(`Excluir a reserva #${reservation.id}?`)) return;
+        const confirmed = await confirmDialog({
+            title: 'Excluir reserva?',
+            text: `A reserva #${reservation.id} será excluída. Essa ação não pode ser desfeita.`,
+            confirmText: 'Excluir',
+            danger: true,
+        });
+        if (!confirmed) return;
 
         setDeletingId(reservation.id);
         setDeleteError(null);
         try {
             await deleteAdminReservation(reservation.id);
             setReservations((current) => current.filter((r) => r.id !== reservation.id));
+            notify('Reserva excluída.');
         } catch (err) {
             setDeleteError(err.message || 'Erro ao excluir a reserva.');
         } finally {

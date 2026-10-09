@@ -5,6 +5,7 @@ import useRooms from '../../../hooks/useRooms';
 import { toDateTimeInput } from '../../../utils/datetime';
 import FieldError from '../../../components/FieldError';
 import NotFound from '../../errors/NotFound';
+import { notify } from '../../../utils/alerts';
 
 export default function AdminReservationForm() {
     const { id } = useParams();
@@ -47,6 +48,7 @@ export default function AdminReservationForm() {
 
         try {
             await updateAdminReservation(id, { ...form, room_id: Number(form.room_id) });
+            notify('Reserva atualizada.');
             navigate('/admin/reservations');
         } catch (err) {
             if (err.validationErrors) {

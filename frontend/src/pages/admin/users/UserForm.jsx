@@ -4,6 +4,7 @@ import { getAdminUser, updateUser } from '../../../services/admin';
 import { useAuth } from '../../../contexts/AuthContext';
 import FieldError from '../../../components/FieldError';
 import NotFound from '../../errors/NotFound';
+import { notify } from '../../../utils/alerts';
 
 export default function AdminUserForm() {
     const { id } = useParams();
@@ -41,6 +42,7 @@ export default function AdminUserForm() {
             await updateUser(id, form);
             // Se o admin editou a própria conta, atualiza o nome no topo
             if (isMe) await refreshUser();
+            notify('Usuário atualizado.');
             navigate('/admin/users');
         } catch (err) {
             if (err.validationErrors) {

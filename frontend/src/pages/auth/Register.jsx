@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import FieldError from '../../components/FieldError';
+import { alertDialog } from '../../utils/alerts';
 import '../../styles/pages/auth.css';
 
 const emptyRegister = { name: '', email: '', password: '', password_confirmation: '' };
@@ -26,8 +27,13 @@ export default function Register() {
         setFieldErrors({});
 
         try {
-            await register(form);
+            const newUser = await register(form);
             navigate('/rooms');
+            alertDialog({
+                title: 'Conta criada!',
+                text: `Bem-vindo ao RoomFlow, ${newUser.name.split(' ')[0]}. Agora é só escolher uma sala e fazer sua reserva.`,
+                confirmText: 'Começar',
+            });
         } catch (err) {
             if (err.validationErrors) {
                 setFieldErrors(err.validationErrors);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { updateProfile } from '../../services/profile';
 import FieldError from '../../components/FieldError';
+import { notify } from '../../utils/alerts';
 
 export default function Profile() {
     const { user, refreshUser } = useAuth();
@@ -12,7 +13,6 @@ export default function Profile() {
         password_confirmation: '',
     });
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
     const [fieldErrors, setFieldErrors] = useState({});
 
@@ -24,7 +24,6 @@ export default function Profile() {
     async function handleSubmit(event) {
         event.preventDefault();
         setSaving(true);
-        setMessage(null);
         setError(null);
         setFieldErrors({});
 
@@ -39,7 +38,7 @@ export default function Profile() {
             await updateProfile(data);
             await refreshUser();
             setForm((current) => ({ ...current, password: '', password_confirmation: '' }));
-            setMessage('Perfil atualizado.');
+            notify('Perfil atualizado.');
         } catch (err) {
             if (err.validationErrors) {
                 setFieldErrors(err.validationErrors);
@@ -60,7 +59,6 @@ export default function Profile() {
                     <p className="page-subtitle">Atualize seus dados de acesso.</p>
                 </div>
             </header>
-            {message && <p className="alert alert-success"><i className="fa-solid fa-circle-check" aria-hidden="true"></i>{message}</p>}
             {error && <p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>{error}</p>}
             <form className="card form" onSubmit={handleSubmit}>
                 <div className="field">

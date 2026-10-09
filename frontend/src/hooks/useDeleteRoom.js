@@ -1,18 +1,26 @@
 import { useState } from 'react';
 import { deleteRoom } from '../services/admin';
+import { confirmDialog, notify } from '../utils/alerts';
 
 export default function useDeleteRoom(onDeleted) {
     const [deletingId, setDeletingId] = useState(null);
     const [error, setError] = useState(null);
 
     async function remove(room) {
-        if (!window.confirm(`Excluir a sala "${room.name}"?`)) return false;
+        const confirmed = await confirmDialog({
+            title: 'Excluir sala?',
+            text: `A sala "${room.name}" será excluída. Essa ação não pode ser desfeita.`,
+            confirmText: 'Excluir',
+            danger: true,
+        });
+        if (!confirmed) return false;
 
         setDeletingId(room.id);
         setError(null);
         try {
             await deleteRoom(room.id);
             onDeleted?.(room.id);
+            notify('Sala excluída.');
             return true;
         } catch (err) {
             setError(err.message || 'Erro ao excluir a sala.');

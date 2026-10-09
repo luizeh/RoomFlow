@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import FieldError from '../../components/FieldError';
-import AuthBackdrop from '../../components/AuthBackdrop';
+import { notify } from '../../utils/alerts';
 import '../../styles/pages/auth.css';
 
 const emptyLogin = { email: '', password: '' };
@@ -27,7 +27,8 @@ export default function Login() {
         setFieldErrors({});
 
         try {
-            await login(form);
+            const loggedUser = await login(form);
+            notify(`Bem-vindo de volta, ${loggedUser.name.split(' ')[0]}!`);
             navigate('/rooms');
         } catch (err) {
             if (err.validationErrors) {
@@ -44,8 +45,6 @@ export default function Login() {
 
     return (
         <main className="auth-page auth-centered">
-            <AuthBackdrop />
-
             <section className="auth-card">
                 <div className="auth-brand">
                     <span className="auth-brand-icon"><i className="fa-regular fa-calendar-check" aria-hidden="true"></i></span>

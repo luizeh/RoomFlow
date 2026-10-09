@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { createRoom, updateRoom } from '../../../services/admin';
 import NotFound from '../../errors/NotFound';
 import useRoom from '../../../hooks/useRoom';
+import { notify } from '../../../utils/alerts';
 
 const emptyRoom = { name: '', capacity: '', location: '', description: '' };
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // mesmo limite do backend (5 MB)
@@ -77,6 +78,7 @@ export default function RoomForm() {
         try {
             if (isEditing) await updateRoom(id, room);
             else await createRoom(room);
+            notify(isEditing ? 'Sala atualizada.' : 'Sala criada.');
             navigate('/admin/rooms');
         } catch (err) {
             const validationMessage = err.validationErrors

@@ -1,0 +1,12 @@
+# Arquivos que não entram no build das imagens (o contexto do build é a raiz do projeto)
+
+# Link criado pelo "php artisan storage:link": aponta para um caminho de dentro do
+# container e quebra o build no Windows ("invalid file request backend/public/storage")
+backend/public/storage
+
+# Dependências são instaladas dentro da imagem (composer install / npm install)
+backend/vendor
+frontend/node_modules
+frontend/dist
+
+.git

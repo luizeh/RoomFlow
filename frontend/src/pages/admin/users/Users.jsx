@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { deleteUser, getUsers, updateUser } from '../../../services/admin';
 import { useAuth } from '../../../contexts/AuthContext';
+import { confirmDialog, notify } from '../../../utils/alerts';
 
 export default function AdminUsers() {
     const { user: currentUser } = useAuth();
@@ -24,6 +25,7 @@ export default function AdminUsers() {
         try {
             const updated = await updateUser(user.id, { role });
             setUsers((current) => current.map((u) => (u.id === user.id ? { ...u, ...updated } : u)));
+            notify(`${user.name} agora é ${role === 'admin' ? 'administrador' : 'usuário comum'}.`);
         } catch (err) {
             setActionError(err.message || 'Erro ao alterar o papel do usuário.');
         } finally {
@@ -32,13 +34,20 @@ export default function AdminUsers() {
     }
 
     async function handleDelete(user) {
-        if (!window.confirm(`Excluir o usuário "${user.name}"? As reservas dele também serão excluídas.`)) return;
+        const confirmed = await confirmDialog({
+            title: 'Excluir usuário?',
+            text: `O usuário "${user.name}" e todas as reservas dele serão excluídos. Essa ação não pode ser desfeita.`,
+            confirmText: 'Excluir',
+            danger: true,
+        });
+        if (!confirmed) return;
 
         setBusyId(user.id);
         setActionError(null);
         try {
             await deleteUser(user.id);
             setUsers((current) => current.filter((u) => u.id !== user.id));
+            notify('Usuário excluído.');
         } catch (err) {
             setActionError(err.message || 'Erro ao excluir o usuário.');
         } finally {
