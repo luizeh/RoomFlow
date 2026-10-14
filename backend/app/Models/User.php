@@ -14,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 // 'role' fica de fora de propósito: assim nenhum create()/update() com dados do cliente
 // consegue transformar alguém em admin. Quem precisa mudar o role usa forceFill().
 #[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Hidden(['password', 'remember_token', 'pivot'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */

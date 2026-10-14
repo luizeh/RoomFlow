@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 use App\Models\Reservation;
+use Illuminate\Validation\Rule;
 
 class ReservationRequest extends FormRequest
 {
@@ -45,10 +46,21 @@ class ReservationRequest extends FormRequest
             }
         }
 
+        $hostId = $this->route('reservation')?->user_id ?? $this->user()->id;
+
         return [
             'room_id' => ['required', 'exists:rooms,id'],
             'start_at' => $startAt,
             'end_at' => $endAt,
+            'title' => ['nullable', 'string', 'max:120'],
+            'participant_ids' => ['sometimes', 'array', 'max:30'],
+            
+            'participant_ids.*' => [
+                'integer',
+                'distinct',
+                'exists:users,id',
+                Rule::notIn([$hostId]),
+            ],
         ];
     }
 
@@ -91,5 +103,23 @@ class ReservationRequest extends FormRequest
                 }
             },
         ];
+    }
+
+    /**
+     * Dados da reserva em si (tudo o que foi validado, menos a lista de participantes,
+     * que não é coluna da tabela reservations).
+     */
+    public function reservationData(): array
+    {
+        return $this->safe()->except('participant_ids');
+    }
+
+    /**
+     * Ids dos participantes validados, ou null se o campo não veio na requisição
+     * (null = não mexer nos participantes; [] = remover todos).
+     */
+    public function participantIds(): ?array
+    {
+        return $this->has('participant_ids') ? $this->validated('participant_ids') : null;
     }
 }
