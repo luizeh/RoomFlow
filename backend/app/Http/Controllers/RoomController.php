@@ -44,7 +44,7 @@ class RoomController extends Controller
         // Reserva entra se começa antes do fim do período e termina depois do início
         // (pega também as que atravessam o começo ou o fim do período).
         $reservations = $room->reservations()
-            ->with('user:id,name')
+        ->with(['user:id,name','participants:id',])
             ->where('start_at', '<', $request->date('end'))
             ->where('end_at', '>', $request->date('start'))
             ->orderBy('start_at')
@@ -52,12 +52,16 @@ class RoomController extends Controller
 
         $schedule = $reservations->map(function (Reservation $reservation) use ($user, $isAdmin) {
             $isMine = $reservation->user()->is($user);
+            $isParticipant = $reservation->participants->contains('id', $user->id);
+            $canSee = $isMine || $isParticipant || $isAdmin;
 
             $item = [
-                'id' => ($isMine || $isAdmin) ? $reservation->id : null,
+                'id' => $canSee ? $reservation->id : null,
+                'title' => $canSee ? $reservation->title : null,
                 'start_at' => $reservation->start_at->format('Y-m-d H:i:s'),
                 'end_at' => $reservation->end_at->format('Y-m-d H:i:s'),
                 'is_mine' => $isMine,
+                'is_participant' => $isParticipant,
             ];
 
             if ($isAdmin) {

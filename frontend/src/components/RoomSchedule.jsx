@@ -16,7 +16,21 @@ import { actionDialog, confirmDialog, notify } from '../utils/alerts';
 import { formatTime, toApiDateTime, toDateInput } from '../utils/datetime';
 
 // Precisam ser cores fixas (o FullCalendar aplica direto no evento)
-const EVENT_COLORS = { busy: '#3f3f46', mine: '#e4e4e7' };
+const EVENT_COLORS = { busy: '#3f3f46', mine: '#e4e4e7', guest: '#a1a1aa' };
+
+// Texto do evento: admin vê quem reservou; o usuário vê o título das reservas dele e das que foi convidado.
+function eventTitle(item, isAdmin) {
+    if (isAdmin) return item.title ? `${item.user.name}: ${item.title}` : item.user.name;
+    if (item.is_mine) return item.title || 'Sua reserva';
+    if (item.is_participant) return item.title ? `Convidado: ${item.title}` : 'Convidado';
+    return 'Ocupado';
+}
+
+function eventColor(item) {
+    if (item.is_mine) return EVENT_COLORS.mine;
+    if (item.is_participant) return EVENT_COLORS.guest;
+    return EVENT_COLORS.busy;
+}
 
 const isSmallScreen = () => window.matchMedia('(max-width: 700px)').matches;
 
@@ -71,10 +85,10 @@ export default function RoomSchedule({ room, user, manage = false, onChange, rel
                 id: item.id ? String(item.id) : undefined,
                 start: item.start_at.replace(' ', 'T'),
                 end: item.end_at.replace(' ', 'T'),
-                title: isAdmin ? item.user.name : item.is_mine ? 'Sua reserva' : 'Ocupado',
-                // Ocupado: cinza escuro. Sua reserva: claro (mesma cor dos botões principais).
-                color: item.is_mine ? EVENT_COLORS.mine : EVENT_COLORS.busy,
-                contrastColor: item.is_mine ? '#0b0b0c' : '#f5f5f5',
+                title: eventTitle(item, isAdmin),
+                // Ocupado: cinza escuro. Sua reserva: claro (mesma cor dos botões principais). Convidado: cinza médio.
+                color: eventColor(item),
+                contrastColor: item.is_mine || item.is_participant ? '#0b0b0c' : '#f5f5f5',
                 extendedProps: { reservationId: item.id, isMine: item.is_mine, userName: item.user?.name },
             }));
         } catch (err) {
@@ -140,7 +154,7 @@ export default function RoomSchedule({ room, user, manage = false, onChange, rel
         }
     }
 
-    // Clicar numa reserva abre os detalhes (só as próprias, ou qualquer uma para o admin).
+    // Clicar numa reserva abre os detalhes (as próprias e as que foi convidado, ou qualquer uma para o admin).
     // No painel admin, abre as opções de editar e excluir.
     function handleEventClick(info) {
         const { reservationId, isMine } = info.event.extendedProps;
@@ -256,6 +270,7 @@ export default function RoomSchedule({ room, user, manage = false, onChange, rel
                 <li><span className="schedule-legend-swatch schedule-legend-free"></span>Livre: clique ou arraste para reservar</li>
                 <li><span className="schedule-legend-swatch schedule-legend-busy"></span>{isAdmin ? 'Reservado (nome de quem reservou)' : 'Ocupado'}</li>
                 <li><span className="schedule-legend-swatch schedule-legend-mine"></span>Sua reserva</li>
+                {!isAdmin && <li><span className="schedule-legend-swatch schedule-legend-guest"></span>Você foi convidado</li>}
                 {canManage && <li><i className="fa-solid fa-up-down-left-right" aria-hidden="true"></i>Arraste uma reserva para mudar o horário; clique para editar ou excluir</li>}
             </ul>
         </div>

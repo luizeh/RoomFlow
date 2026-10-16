@@ -7,6 +7,7 @@ import Reservations from './pages/reservations/Reservations';
 import ReservationDetails from './pages/reservations/ReservationDetails';
 import ReservationForm from './pages/reservations/ReservationForm';
 import Profile from './pages/profile/Profile';
+import SharedReservation from './pages/shared/SharedReservation';
 import NotFound from './pages/errors/NotFound';
 import Dashboard from './pages/admin/dashboard/Dashboard';
 import AdminRooms from './pages/admin/rooms/Rooms';
@@ -34,6 +35,7 @@ function App() {
                 {/* Públicas */}
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/rooms/:id" element={<RoomDetails />} />
+                <Route path="/shared/:token" element={<SharedReservation />} />
 
                 {/* Usuário logado */}
                 <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />

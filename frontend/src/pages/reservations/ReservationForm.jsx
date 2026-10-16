@@ -6,19 +6,23 @@ import useReservation from '../../hooks/useReservation';
 import useRooms from '../../hooks/useRooms';
 import { toDateTimeInput } from '../../utils/datetime';
 import FieldError from '../../components/FieldError';
+import ParticipantPicker from '../../components/ParticipantPicker';
+import { useAuth } from '../../contexts/AuthContext';
 import { notify } from '../../utils/alerts';
 
-const emptyReservation = { room_id: '', start_at: '', end_at: '' };
+const emptyReservation = { room_id: '', title: '', start_at: '', end_at: '' };
 
 export default function ReservationForm() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [searchParams] = useSearchParams();
     const isEditing = Boolean(id);
     const { reservation: existingReservation, loading, error: loadError, notFound } = useReservation(id);
     const { rooms, loading: loadingRooms, error: roomsError } = useRooms();
     // /reservations/new?room=3 já abre com a sala 3 selecionada
     const [form, setForm] = useState({ ...emptyReservation, room_id: searchParams.get('room') ?? '' });
+    const [participants, setParticipants] = useState([]);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
     const [fieldErrors, setFieldErrors] = useState({});
@@ -27,9 +31,11 @@ export default function ReservationForm() {
         if (!existingReservation) return;
         setForm({
             room_id: String(existingReservation.room_id ?? ''),
+            title: existingReservation.title ?? '',
             start_at: toDateTimeInput(existingReservation.start_at),
             end_at: toDateTimeInput(existingReservation.end_at),
         });
+        setParticipants(existingReservation.participants ?? []);
     }, [existingReservation]);
 
     function handleChange(event) {
@@ -46,6 +52,8 @@ export default function ReservationForm() {
         const reservation = {
             ...form,
             room_id: Number(form.room_id),
+            title: form.title.trim() || null,
+            participant_ids: participants.map((participant) => participant.id),
         };
         try {
             const savedReservation = isEditing
@@ -67,6 +75,15 @@ export default function ReservationForm() {
     if (loading || loadingRooms) return <p className="state">Carregando...</p>;
     if (notFound) return <NotFound />;
     if (loadError || roomsError) return <main className="page page-narrow"><p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>Ocorreu um erro: {loadError || roomsError}</p></main>;
+    // Convidado não edita a reserva (o backend também bloqueia)
+    if (existingReservation && existingReservation.user_id !== user.id && user.role !== 'admin') {
+        return <main className="page page-narrow"><p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>Só quem criou a reserva pode editá-la.</p></main>;
+    }
+
+    // Erros de participantes vêm por posição (participant_ids.0, participant_ids.1...)
+    const participantErrors = Object.entries(fieldErrors)
+        .filter(([key]) => key.startsWith('participant_ids'))
+        .flatMap(([, messages]) => messages);
 
     return (
         <main className="page page-narrow">
@@ -74,11 +91,16 @@ export default function ReservationForm() {
             <header className="page-header">
                 <div>
                     <h1 className="page-title">{isEditing ? 'Editar reserva' : 'Nova reserva'}</h1>
-                    <p className="page-subtitle">Escolha a sala e o horário da reunião.</p>
+                    <p className="page-subtitle">Escolha a sala, o horário e quem vai participar da reunião.</p>
                 </div>
             </header>
             {error && <p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>{error}</p>}
             <form className="card form" onSubmit={handleSubmit}>
+                <div className="field">
+                    <label htmlFor="title">Título <span className="field-hint">(opcional)</span></label>
+                    <input id="title" name="title" type="text" value={form.title} onChange={handleChange} maxLength={120} placeholder="Ex.: Reunião de planejamento" />
+                    <FieldError messages={fieldErrors.title} />
+                </div>
                 <div className="field">
                     <label htmlFor="room_id">Sala</label>
                     <div className="input-icon">
@@ -106,6 +128,12 @@ export default function ReservationForm() {
                         <input id="end_at" name="end_at" type="datetime-local" value={form.end_at} onChange={handleChange} min={form.start_at || undefined} required />
                         <FieldError messages={fieldErrors.end_at} />
                     </div>
+                </div>
+                <div className="field">
+                    <label htmlFor="participant_search">Convidados</label>
+                    <ParticipantPicker value={participants} onChange={setParticipants} />
+                    <span className="field-hint">Os convidados veem a reserva na lista deles, mas só você pode editá-la.</span>
+                    <FieldError messages={participantErrors} />
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="btn btn-primary" disabled={saving}>

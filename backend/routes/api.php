@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ReservationShareController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RoomController as AdminRoomController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
@@ -23,6 +24,7 @@ Route::middleware('throttle:6,1')->group(function () {
 });
 
 Route::apiResource('rooms', RoomController::class)->only(['index', 'show']);
+Route::get('/shared-reservations/{token}',[ReservationShareController::class, 'show'])->middleware('throttle:30,1');
 
 /*
 | Usuário autenticado
@@ -37,6 +39,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Agenda da sala (horários ocupados). Admin vê quem reservou; usuário comum vê só "ocupado".
     Route::get('/rooms/{room}/schedule', [RoomController::class, 'schedule'])->name('rooms.schedule');
+
+    Route::get('/users/search', [UserController::class, 'search']);
+    
+    Route::post('/reservations/{reservation}/share', [ReservationShareController::class, 'store']);
+    Route::delete('/reservations/{reservation}/share',[ReservationShareController::class, 'destroy']);
+    Route::delete('/reservations/{reservation}/participation',[ReservationController::class, 'leave']);
 });
 
 /*

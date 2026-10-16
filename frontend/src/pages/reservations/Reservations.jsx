@@ -2,25 +2,23 @@ import { Link } from 'react-router-dom';
 import ReservationCard from '../../components/ReservationCard';
 import useDeleteReservation from '../../hooks/useDeleteReservation';
 import useReservations from '../../hooks/useReservations';
-import useRooms from '../../hooks/useRooms';
+import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/pages/reservations.css';
 
 export default function Reservations() {
     const { reservations, loading, error, removeReservation } = useReservations();
-    const { rooms } = useRooms();
+    const { user } = useAuth();
     const { remove, deletingId, error: deleteError } = useDeleteReservation(removeReservation);
 
     if (loading) return <p className="state">Carregando reservas...</p>;
     if (error) return <main className="page"><p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>Ocorreu um erro: {error}</p></main>;
-
-    const roomNames = Object.fromEntries(rooms.map((room) => [room.id, room.name]));
 
     return (
         <main className="page">
             <header className="page-header">
                 <div>
                     <h1 className="page-title">Minhas reservas</h1>
-                    <p className="page-subtitle">Acompanhe, edite ou cancele as suas reservas.</p>
+                    <p className="page-subtitle">Acompanhe as reservas que você criou e as que foi convidado.</p>
                 </div>
                 <Link to="/reservations/new" className="btn btn-primary">
                     <i className="fa-solid fa-plus" aria-hidden="true"></i> Nova reserva
@@ -39,7 +37,7 @@ export default function Reservations() {
                         <ReservationCard
                             key={reservation.id}
                             reservation={reservation}
-                            roomName={roomNames[reservation.room_id]}
+                            isHost={reservation.user_id === user.id}
                             onDelete={() => remove(reservation)}
                             deleting={deletingId === reservation.id}
                         />

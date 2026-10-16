@@ -50,6 +50,8 @@ class RoomScheduleTest extends TestCase
         $response->assertOk()
             ->assertExactJson([[
                 'id' => null,
+                'title' => null,
+                'is_participant' => false,
                 'start_at' => '2030-01-07 14:00:00',
                 'end_at' => '2030-01-07 15:00:00',
                 'is_mine' => false,

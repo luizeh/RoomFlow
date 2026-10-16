@@ -27,3 +27,208 @@
 .reservation-card .card-actions {
     padding-top: 4px;
 }
+
+.reservation-card-heading {
+    min-width: 0;
+}
+
+.reservation-card-room {
+    margin-top: 2px;
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+/* Convidados: lista nos detalhes da reserva */
+.participant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.participant-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+}
+
+.participant-list i {
+    width: 14px;
+    color: var(--color-icon);
+}
+
+.participant-email {
+    font-size: 13px;
+    color: var(--color-subtle);
+    overflow-wrap: anywhere;
+}
+
+/* Campo de convidar (busca + chips) no formulário */
+.participant-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.participant-results {
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+}
+
+.participant-results li + li {
+    border-top: 1px solid var(--color-border);
+}
+
+.participant-results-state {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+.participant-option {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: var(--color-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.participant-option:hover,
+.participant-option:focus-visible {
+    background: var(--color-surface-hover);
+    outline: none;
+}
+
+.participant-name {
+    font-size: 14px;
+}
+
+.participant-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.participant-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 6px 0 12px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-input-bg);
+    font-size: 13px;
+}
+
+.participant-chip button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+}
+
+.participant-chip button:hover,
+.participant-chip button:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+    outline: none;
+}
+
+/* Link de convite nos detalhes da reserva */
+.share-card {
+    margin-top: 24px;
+}
+
+.share-card .section-title i {
+    margin-right: 6px;
+    color: var(--color-icon);
+}
+
+.share-card .muted {
+    font-size: 14px;
+}
+
+.share-link {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.share-link input {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--radius);
+    background: var(--color-input-bg);
+    font: inherit;
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+.share-link input:focus {
+    outline: none;
+    border-color: var(--color-input-focus);
+}
+
+.share-card .detail-actions {
+    padding-top: 16px;
+}
+
+/* Página pública do convite */
+.shared-invite.has-image {
+    display: grid;
+    grid-template-columns: minmax(0, 280px) 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.shared-invite-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    object-fit: cover;
+}
+
+.shared-invite-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+.shared-invite .page-title {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+    .shared-invite.has-image {
+        grid-template-columns: 1fr;
+    }
+
+    .share-link {
+        flex-direction: column;
+    }
+}
