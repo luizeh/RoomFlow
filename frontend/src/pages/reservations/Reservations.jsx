@@ -18,11 +18,16 @@ export default function Reservations() {
             <header className="page-header">
                 <div>
                     <h1 className="page-title">Minhas reservas</h1>
-                    <p className="page-subtitle">Acompanhe as reservas que você criou e as que foi convidado.</p>
+                    <p className="page-subtitle">Acompanhe suas solicitações, as reservas aprovadas e as que você foi convidado.</p>
                 </div>
-                <Link to="/reservations/new" className="btn btn-primary">
-                    <i className="fa-solid fa-plus" aria-hidden="true"></i> Nova reserva
-                </Link>
+                <div className="page-header-actions">
+                    <Link to="/agenda" className="btn btn-secondary">
+                        <i className="fa-regular fa-calendar" aria-hidden="true"></i> Ver agenda
+                    </Link>
+                    <Link to="/reservations/new" className="btn btn-primary">
+                        <i className="fa-solid fa-plus" aria-hidden="true"></i> {user.role === 'admin' ? 'Nova reserva' : 'Solicitar reserva'}
+                    </Link>
+                </div>
             </header>
             {deleteError && <p className="alert alert-error" role="alert"><i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>{deleteError}</p>}
             {reservations.length === 0 ? (

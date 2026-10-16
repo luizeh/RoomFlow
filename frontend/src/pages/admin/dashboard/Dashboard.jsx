@@ -18,10 +18,11 @@ export default function Dashboard() {
     if (!data) return <p className="state">Carregando painel...</p>;
 
     const stats = [
+        { label: 'Solicitações pendentes', value: data.pending_reservations, icon: 'fa-inbox', to: '/admin/requests', highlight: data.pending_reservations > 0 },
         { label: 'Salas', value: data.rooms, icon: 'fa-door-open', to: '/admin/rooms' },
         { label: 'Usuários', value: data.users, icon: 'fa-users', to: '/admin/users' },
         { label: 'Reservas', value: data.reservations, icon: 'fa-calendar-days', to: '/admin/reservations' },
-        { label: 'Começam hoje', value: data.reservations_today, icon: 'fa-clock' },
+        { label: 'Aprovadas que começam hoje', value: data.reservations_today, icon: 'fa-clock' },
     ];
 
     return (
@@ -45,14 +46,14 @@ export default function Dashboard() {
                         </>
                     );
                     return stat.to ? (
-                        <Link key={stat.label} to={stat.to} className="stat-card">{content}</Link>
+                        <Link key={stat.label} to={stat.to} className={`stat-card${stat.highlight ? ' stat-card-highlight' : ''}`}>{content}</Link>
                     ) : (
                         <div key={stat.label} className="stat-card">{content}</div>
                     );
                 })}
             </div>
 
-            <h2 className="section-title">Próximas reservas</h2>
+            <h2 className="section-title">Próximas reservas aprovadas</h2>
             {data.upcoming_reservations.length === 0 ? (
                 <div className="empty-state">
                     <i className="fa-regular fa-calendar" aria-hidden="true"></i>

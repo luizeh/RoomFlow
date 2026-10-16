@@ -1,5 +1,7 @@
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getPendingCount, PENDING_CHANGED_EVENT } from '../services/admin';
 import '../styles/layouts/admin.css';
 import { confirmDialog, notify } from '../utils/alerts';
 
@@ -7,13 +9,35 @@ const links = [
     { to: '/admin', label: 'Painel', icon: 'fa-gauge', end: true },
     { to: '/admin/rooms', label: 'Salas', icon: 'fa-door-open' },
     { to: '/admin/users', label: 'Usuários', icon: 'fa-users' },
+    { to: '/admin/requests', label: 'Solicitações', icon: 'fa-inbox', counter: true },
     { to: '/admin/reservations', label: 'Reservas', icon: 'fa-calendar-days' },
+    { to: '/admin/site', label: 'Conteúdo do site', icon: 'fa-pen-ruler' },
 ];
 
 // Estrutura base das páginas do painel admin: menu lateral e conteúdo
 export default function AdminLayout() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const { pathname } = useLocation();
+    const [pendingCount, setPendingCount] = useState(0);
+
+    // Número de solicitações pendentes no menu: atualiza ao trocar de página
+    // e quando alguma tela avisa que aprovou/recusou (announcePendingChanged)
+    useEffect(() => {
+        let active = true;
+        const load = () => getPendingCount()
+            .then((data) => {
+                if (active) setPendingCount(data.count);
+            })
+            .catch(() => {});
+
+        load();
+        window.addEventListener(PENDING_CHANGED_EVENT, load);
+        return () => {
+            active = false;
+            window.removeEventListener(PENDING_CHANGED_EVENT, load);
+        };
+    }, [pathname]);
 
     async function handleLogout() {
         const confirmed = await confirmDialog({
@@ -49,6 +73,9 @@ export default function AdminLayout() {
                         <NavLink key={link.to} to={link.to} end={link.end}>
                             <i className={`fa-solid ${link.icon}`} aria-hidden="true"></i>
                             {link.label}
+                            {link.counter && pendingCount > 0 && (
+                                <span className="admin-nav-counter" aria-label={`${pendingCount} pendentes`}>{pendingCount}</span>
+                            )}
                         </NavLink>
                     ))}
                 </nav>

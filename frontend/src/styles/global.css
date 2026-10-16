@@ -27,6 +27,9 @@
     --color-success: #4ade80;
     --color-success-bg: rgba(74, 222, 128, 0.08);
     --color-success-border: rgba(74, 222, 128, 0.35);
+    --color-warning: #fbbf24;
+    --color-warning-bg: rgba(251, 191, 36, 0.08);
+    --color-warning-border: rgba(251, 191, 36, 0.4);
 
     --radius: 6px;
     --radius-lg: 12px;

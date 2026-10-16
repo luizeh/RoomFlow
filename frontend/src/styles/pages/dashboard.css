@@ -24,6 +24,16 @@ a.stat-card:hover {
     background: var(--color-surface-hover);
 }
 
+.stat-card-highlight {
+    border-color: var(--color-warning-border);
+    background: var(--color-warning-bg);
+}
+
+.stat-card-highlight .stat-card-value,
+.stat-card-highlight .stat-card-top i {
+    color: var(--color-warning);
+}
+
 .stat-card-top {
     display: flex;
     align-items: center;

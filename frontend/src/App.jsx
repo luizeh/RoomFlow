@@ -9,6 +9,7 @@ import ReservationDetails from './pages/reservations/ReservationDetails';
 import ReservationForm from './pages/reservations/ReservationForm';
 import Profile from './pages/profile/Profile';
 import SharedReservation from './pages/shared/SharedReservation';
+import Schedule from './pages/schedule/Schedule';
 import NotFound from './pages/errors/NotFound';
 import Dashboard from './pages/admin/dashboard/Dashboard';
 import AdminRooms from './pages/admin/rooms/Rooms';
@@ -17,6 +18,8 @@ import AdminUsers from './pages/admin/users/Users';
 import AdminUserForm from './pages/admin/users/UserForm';
 import AdminReservations from './pages/admin/reservations/Reservations';
 import AdminReservationForm from './pages/admin/reservations/ReservationForm';
+import AdminRequests from './pages/admin/requests/Requests';
+import AdminSiteSettings from './pages/admin/site/SiteSettings';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AppLayout from './layouts/AppLayout';
@@ -25,7 +28,7 @@ import AdminLayout from './layouts/AdminLayout';
 function App() {
     return (
         <Routes>
-            {/* Landing page: tela cheia, sem layout */}
+            {/* Landing page: tela cheia, sem o AppLayout (tem o próprio footer) */}
             <Route path="/" element={<Landing />} />
 
             {/* Autenticação: telas em tela cheia, sem layout */}
@@ -40,6 +43,7 @@ function App() {
                 <Route path="/shared/:token" element={<SharedReservation />} />
 
                 {/* Usuário logado */}
+                <Route path="/agenda" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
                 <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
                 <Route path="/reservations/new" element={<ProtectedRoute><ReservationForm /></ProtectedRoute>} />
                 <Route path="/reservations/:id/edit" element={<ProtectedRoute><ReservationForm /></ProtectedRoute>} />
@@ -59,6 +63,8 @@ function App() {
                 <Route path="users/:id/edit" element={<AdminUserForm />} />
                 <Route path="reservations" element={<AdminReservations />} />
                 <Route path="reservations/:id/edit" element={<AdminReservationForm />} />
+                <Route path="requests" element={<AdminRequests />} />
+                <Route path="site" element={<AdminSiteSettings />} />
             </Route>
         </Routes>
     );

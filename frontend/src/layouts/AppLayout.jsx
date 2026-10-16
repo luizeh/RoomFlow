@@ -1,10 +1,11 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import UserMenu from '../components/UserMenu';
+import SiteFooter from '../components/SiteFooter';
 import { confirmDialog, notify } from '../utils/alerts';
 import '../styles/layouts/app.css';
 
-// Estrutura base das páginas do site: barra superior com navegação e conteúdo
+// Estrutura base das páginas do site: barra superior com navegação, conteúdo e rodapé
 export default function AppLayout() {
     const navigate = useNavigate();
     const { user, loading, logout } = useAuth();
@@ -38,6 +39,7 @@ export default function AppLayout() {
 
                     <nav className="app-nav">
                         <NavLink to="/rooms">Salas</NavLink>
+                        {user && <NavLink to="/agenda">Agenda</NavLink>}
                         {user && <NavLink to="/reservations">Minhas reservas</NavLink>}
                         {user?.role === 'admin' && <NavLink to="/admin">Painel admin</NavLink>}
                     </nav>
@@ -60,6 +62,8 @@ export default function AppLayout() {
             <div className="app-content">
                 <Outlet />
             </div>
+
+            <SiteFooter />
         </div>
     );
 }

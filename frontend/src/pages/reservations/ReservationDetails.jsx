@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import NotFound from '../errors/NotFound';
+import StatusBadge from '../../components/StatusBadge';
 import { useAuth } from '../../contexts/AuthContext';
 import useDeleteReservation from '../../hooks/useDeleteReservation';
 import useReservation from '../../hooks/useReservation';
@@ -111,10 +112,26 @@ export default function ReservationDetails() {
                         <h1 className="page-title">{reservation.title || `Reserva #${reservation.id}`}</h1>
                         <p className="page-subtitle">
                             {reservation.room?.name || `Sala #${reservation.room_id}`}
-                            {!isHost && isParticipant && <> · <span className="badge">Convidado</span></>}
+                            {' · '}<StatusBadge status={reservation.status} />
+                            {!isHost && isParticipant && <> <span className="badge">Convidado</span></>}
                         </p>
                     </div>
                 </div>
+                {reservation.status === 'pending' && (
+                    <div className="alert alert-warning status-alert" role="status">
+                        <i className="fa-regular fa-hourglass-half" aria-hidden="true"></i>
+                        <p>Aguardando aprovação de um administrador. {isHost && 'Você recebe um e-mail quando a solicitação for respondida.'}</p>
+                    </div>
+                )}
+                {reservation.status === 'rejected' && (
+                    <div className="alert alert-error status-alert" role="status">
+                        <i className="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                        <div>
+                            <p>Esta solicitação foi recusada.{isHost && ' Você pode editar a sala ou o horário para enviar de novo.'}</p>
+                            {reservation.rejection_reason && <p><strong>Motivo:</strong> {reservation.rejection_reason}</p>}
+                        </div>
+                    </div>
+                )}
                 <dl className="detail-list time-range">
                     <div>
                         <dt>Sala</dt>

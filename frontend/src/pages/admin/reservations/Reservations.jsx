@@ -4,6 +4,7 @@ import { deleteAdminReservation, getAdminReservations, getAdminRooms } from '../
 import { formatDateTime } from '../../../utils/datetime';
 import { confirmDialog, notify } from '../../../utils/alerts';
 import { useAuth } from '../../../contexts/AuthContext';
+import StatusBadge from '../../../components/StatusBadge';
 import '../../../styles/pages/admin-reservations.css';
 
 // A agenda (FullCalendar) só é baixada quando o admin escolhe uma sala
@@ -82,7 +83,10 @@ export default function AdminReservations() {
             <header className="page-header">
                 <div>
                     <h1 className="page-title">Reservas</h1>
-                    <p className="page-subtitle">Escolha uma sala para ver a agenda e gerenciar as reservas de todos.</p>
+                    <p className="page-subtitle">
+                        Escolha uma sala para ver a agenda e gerenciar as reservas de todos.
+                        Para aprovar pedidos, use <Link to="/admin/requests">Solicitações</Link>.
+                    </p>
                 </div>
                 <div className="field room-picker">
                     <label htmlFor="room-picker" className="sr-only">Sala</label>
@@ -136,6 +140,7 @@ export default function AdminReservations() {
                                 <th>#</th>
                                 <th>Sala</th>
                                 <th>Reservado por</th>
+                                <th>Situação</th>
                                 <th>Início</th>
                                 <th>Fim</th>
                                 <th><span className="sr-only">Ações</span></th>
@@ -147,6 +152,7 @@ export default function AdminReservations() {
                                     <td className="table-secondary">{reservation.id}</td>
                                     <td className="table-primary">{reservation.room?.name}</td>
                                     <td className="table-secondary">{reservation.user?.name}</td>
+                                    <td><StatusBadge status={reservation.status} /></td>
                                     <td className="table-secondary time-range">{formatDateTime(reservation.start_at)}</td>
                                     <td className="table-secondary time-range">{formatDateTime(reservation.end_at)}</td>
                                     <td>

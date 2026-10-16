@@ -24,6 +24,32 @@
     flex-shrink: 0;
 }
 
+.reservation-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.reservation-card-reason {
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.reservation-card-reason strong {
+    font-weight: 600;
+    color: var(--color-error);
+}
+
+/* Aviso de situação nos detalhes (pendente / recusada) */
+.status-alert {
+    margin: 24px 0 0;
+}
+
+.status-alert p + p {
+    margin-top: 4px;
+}
+
 .reservation-card .card-actions {
     padding-top: 4px;
 }

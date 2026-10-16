@@ -114,3 +114,56 @@ export function alertDialog({ title, text, icon = 'success', confirmText = 'OK',
 export function notify(title, icon = 'success') {
     return toast.fire({ title, icon });
 }
+
+// Janela com uma lista de opções (ex.: escolher a sala). options: { valor: 'Texto' }.
+// Retorna o valor escolhido ou null se cancelou.
+export async function selectDialog({ title, text, options, placeholder = 'Selecione...', confirmText = 'Confirmar', icon = 'question' }) {
+    const result = await baseAlert.fire({
+        title,
+        text,
+        icon,
+        input: 'select',
+        inputOptions: options,
+        inputPlaceholder: placeholder,
+        inputValidator: (value) => (value ? undefined : 'Escolha uma opção.'),
+        showCancelButton: true,
+        confirmButtonText: confirmText,
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            popup: 'swal-popup',
+            title: 'swal-title',
+            htmlContainer: 'swal-text',
+            actions: 'swal-actions',
+            input: 'swal-input',
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-secondary',
+        },
+    });
+    return result.isConfirmed ? result.value : null;
+}
+
+// Janela com um campo de texto livre (ex.: motivo da recusa).
+// Retorna o texto (pode ser vazio) ou null se cancelou.
+export async function promptDialog({ title, text, placeholder = '', confirmText = 'Confirmar', danger = false, maxLength = 500 }) {
+    const result = await baseAlert.fire({
+        title,
+        text,
+        icon: danger ? 'warning' : 'question',
+        input: 'textarea',
+        inputPlaceholder: placeholder,
+        inputAttributes: { maxlength: String(maxLength) },
+        showCancelButton: true,
+        confirmButtonText: confirmText,
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            popup: 'swal-popup',
+            title: 'swal-title',
+            htmlContainer: 'swal-text',
+            actions: 'swal-actions',
+            input: 'swal-input',
+            confirmButton: danger ? 'btn btn-danger' : 'btn btn-primary',
+            cancelButton: 'btn btn-secondary',
+        },
+    });
+    return result.isConfirmed ? result.value.trim() : null;
+}

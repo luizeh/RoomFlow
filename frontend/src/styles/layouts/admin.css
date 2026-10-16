@@ -65,6 +65,22 @@
     color: var(--color-text);
 }
 
+/* Número de solicitações pendentes ao lado de "Solicitações" */
+.admin-nav-counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 20px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--color-warning);
+    font-size: 12px;
+    font-weight: 700;
+    color: #0b0b0c;
+}
+
 .admin-sidebar-footer {
     display: flex;
     flex-direction: column;

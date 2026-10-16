@@ -92,6 +92,8 @@
 /* Agenda da sala */
 .room-schedule-card {
     margin-top: 24px;
+    /* Ao rolar até #agenda, não fica escondida atrás do cabeçalho fixo */
+    scroll-margin-top: 88px;
 }
 
 @media (max-width: 860px) {

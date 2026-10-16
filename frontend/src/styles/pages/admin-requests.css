@@ -1,0 +1,115 @@
+/* Painel admin: fila de solicitações de reserva */
+
+/* Abas de situação (Pendentes / Aprovadas / Recusadas) */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 24px;
+    padding: 4px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+}
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+.tab:hover {
+    color: var(--color-text);
+}
+
+.tab[aria-pressed='true'] {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+}
+
+.tab:focus-visible {
+    outline: 2px solid var(--color-input-focus);
+    outline-offset: 1px;
+}
+
+.request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.request-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.request-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.request-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.request-title {
+    margin-right: 4px;
+    font-size: 17px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.request-item .meta-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+}
+
+.request-reason {
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+.request-reason strong {
+    font-weight: 600;
+    color: var(--color-error);
+}
+
+.request-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+    .request-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .request-actions {
+        justify-content: flex-start;
+    }
+}

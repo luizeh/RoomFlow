@@ -1,0 +1,49 @@
+/* Painel admin: edição do conteúdo do site */
+
+.site-settings-form {
+    gap: 20px;
+}
+
+.site-settings-form .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+}
+
+.site-settings-form .section-title i {
+    font-size: 15px;
+    color: var(--color-subtle);
+}
+
+/* Pré-visualização larga da imagem de fundo da landing */
+.site-hero-preview {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 21 / 9;
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 10px;
+    background: var(--color-bg);
+}
+
+.site-hero-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+}
+
+.site-hero-preview .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(11, 11, 12, 0.7);
+    backdrop-filter: blur(6px);
+}
+
+/* O input de arquivo fica escondido: o foco do teclado aparece no botão "Trocar imagem" */
+.field:has(#hero_image:focus-visible) .image-upload-actions label {
+    outline: 2px solid var(--color-input-focus);
+    outline-offset: 2px;
+}

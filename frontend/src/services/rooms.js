@@ -16,3 +16,9 @@ export function getRoom(id) {
 export function getRoomSchedule(id, start, end) {
     return api.get(`/rooms/${id}/schedule`, { params: { start, end } });
 }
+
+// Agenda geral: todas as salas, ou só as de roomIds (vai como ?rooms[]=1&rooms[]=2).
+// Mesmas regras de visibilidade da agenda de uma sala.
+export function getSchedule(start, end, roomIds) {
+    return api.get('/schedule', { params: { start, end, rooms: roomIds?.length ? roomIds : undefined } });
+}

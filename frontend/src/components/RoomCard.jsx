@@ -18,8 +18,12 @@ export default function RoomCard({ room }) {
                 </ul>
                 {room.description && <p className="room-card-description">{room.description}</p>}
                 <div className="card-actions">
+                    {/* #agenda: abre a página da sala já rolada até a agenda */}
+                    <Link to={`/rooms/${room.id}#agenda`} className="btn btn-primary">
+                        <i className="fa-regular fa-calendar-plus" aria-hidden="true"></i> Solicitar horário
+                    </Link>
                     <Link to={`/rooms/${room.id}`} className="btn btn-secondary">
-                        Ver detalhes <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        Detalhes <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </Link>
                 </div>
             </div>

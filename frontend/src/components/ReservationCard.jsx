@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { formatDateTime } from '../utils/datetime';
+import StatusBadge from './StatusBadge';
 
 // isHost: a reserva é do usuário (pode editar/excluir). Senão ele é convidado e só vê os detalhes.
 export default function ReservationCard({ reservation, isHost, onDelete, deleting }) {
@@ -12,8 +13,14 @@ export default function ReservationCard({ reservation, isHost, onDelete, deletin
                     <h3 className="reservation-card-title">{reservation.title || roomName}</h3>
                     {reservation.title && <p className="reservation-card-room">{roomName}</p>}
                 </div>
-                {isHost ? <span className="badge">#{reservation.id}</span> : <span className="badge badge-strong">Convidado</span>}
+                <div className="reservation-card-badges">
+                    <StatusBadge status={reservation.status} />
+                    {!isHost && <span className="badge badge-strong">Convidado</span>}
+                </div>
             </div>
+            {reservation.status === 'rejected' && reservation.rejection_reason && (
+                <p className="reservation-card-reason"><strong>Motivo:</strong> {reservation.rejection_reason}</p>
+            )}
             <ul className="meta-list time-range">
                 <li><i className="fa-regular fa-clock" aria-hidden="true"></i>Início: {formatDateTime(reservation.start_at)}</li>
                 <li><i className="fa-solid fa-flag-checkered" aria-hidden="true"></i>Fim: {formatDateTime(reservation.end_at)}</li>

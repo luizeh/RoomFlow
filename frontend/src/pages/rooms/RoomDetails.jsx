@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import NotFound from '../errors/NotFound';
 import useRoom from '../../hooks/useRoom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -12,6 +12,14 @@ export default function RoomDetails() {
     const { user } = useAuth();
     const { id } = useParams();
     const { room, loading, error: loadError, notFound } = useRoom(id);
+    const { hash } = useLocation();
+
+    // Veio do botão "Solicitar horário" (/rooms/1#agenda): rola até a agenda depois que a sala carrega
+    useEffect(() => {
+        if (hash === '#agenda' && room) {
+            document.getElementById('agenda')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [hash, room]);
 
     if (loading) return <p className="state">Carregando sala...</p>;
     if (notFound) return <NotFound />;
@@ -50,17 +58,17 @@ export default function RoomDetails() {
                 </div>
             </article>
 
-            <section className="card room-schedule-card">
+            <section id="agenda" className="card room-schedule-card">
                 <header className="room-schedule-header">
                     <h2 className="section-title">Agenda da sala</h2>
-                    {user && <p className="muted">Clique ou arraste num horário livre para reservar.</p>}
+                    {user && <p className="muted"><Link to="/agenda">Ver agenda de todas as salas</Link></p>}
                 </header>
                 {user ? (
                     <Suspense fallback={<p className="state">Carregando agenda...</p>}>
                         <RoomSchedule room={room} user={user} />
                     </Suspense>
                 ) : (
-                    <p className="muted"><Link to="/login">Entre</Link> para ver os horários livres e reservar esta sala.</p>
+                    <p className="muted"><Link to="/login">Entre</Link> para ver os horários livres e solicitar esta sala.</p>
                 )}
             </section>
         </main>
