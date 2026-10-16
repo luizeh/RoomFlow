@@ -9,6 +9,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ReservationShareController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\Admin\ReservationReviewController;
 use App\Http\Controllers\Admin\SiteSettingController as AdminSiteSettingController;
@@ -41,6 +42,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
+
+    // Avisos do site (sininho). read-all vem antes de {id} para não ser lido como id.
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 
     Route::apiResource('reservations', ReservationController::class);
 

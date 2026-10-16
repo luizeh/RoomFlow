@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import UserMenu from '../components/UserMenu';
 import SiteFooter from '../components/SiteFooter';
+import NotificationBell from '../components/NotificationBell';
 import { confirmDialog, notify } from '../utils/alerts';
 import '../styles/layouts/app.css';
 
@@ -47,7 +48,10 @@ export default function AppLayout() {
                     {!loading && (
                         <div className="app-user">
                             {user ? (
-                                <UserMenu user={user} onLogout={handleLogout} />
+                                <>
+                                    <NotificationBell />
+                                    <UserMenu user={user} onLogout={handleLogout} />
+                                </>
                             ) : (
                                 <>
                                     <Link to="/login" className="btn btn-ghost btn-sm">Entrar</Link>

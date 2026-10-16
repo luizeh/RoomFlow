@@ -7,7 +7,8 @@ use App\Models\Reservation;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-// E-mail para o dono da reserva quando o admin aprova ou recusa a solicitação.
+// Aviso para o dono da reserva quando o admin aprova ou recusa a solicitação:
+// fica salvo no banco (sininho do site) e vai por e-mail.
 class ReservationReviewed extends Notification
 {
     public function __construct(public Reservation $reservation)
@@ -15,11 +16,37 @@ class ReservationReviewed extends Notification
     }
 
     /**
+     * 'database' vem primeiro: se o envio do e-mail falhar, o aviso no site já foi salvo.
+     *
      * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database', 'mail'];
+    }
+
+    /**
+     * O que fica salvo na coluna data da tabela notifications (o sininho do site mostra isso).
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        $reservation = $this->reservation->loadMissing('room');
+        $approved = $reservation->status === ReservationStatus::Approved;
+
+        return [
+            'reservation_id' => $reservation->id,
+            'status' => $reservation->status->value,
+            'title' => $reservation->title,
+            'room_name' => $reservation->room->name,
+            'start_at' => $reservation->start_at->format('Y-m-d H:i:s'),
+            'end_at' => $reservation->end_at->format('Y-m-d H:i:s'),
+            'rejection_reason' => $approved ? null : $reservation->rejection_reason,
+            'message' => $approved
+                ? 'Sua reserva na '.$reservation->room->name.' foi aprovada.'
+                : 'Sua solicitação na '.$reservation->room->name.' foi recusada.',
+        ];
     }
 
     public function toMail(object $notifiable): MailMessage
