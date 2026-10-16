@@ -8,6 +8,10 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ReservationShareController;
+use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SiteSettingController;
+use App\Http\Controllers\Admin\ReservationReviewController;
+use App\Http\Controllers\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RoomController as AdminRoomController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
@@ -26,6 +30,9 @@ Route::middleware('throttle:6,1')->group(function () {
 Route::apiResource('rooms', RoomController::class)->only(['index', 'show']);
 Route::get('/shared-reservations/{token}',[ReservationShareController::class, 'show'])->middleware('throttle:30,1');
 
+// Textos da landing page e contatos do footer
+Route::get('/site-settings', [SiteSettingController::class, 'show'])->name('site-settings.show');
+
 /*
 | Usuário autenticado
 */
@@ -39,6 +46,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Agenda da sala (horários ocupados). Admin vê quem reservou; usuário comum vê só "ocupado".
     Route::get('/rooms/{room}/schedule', [RoomController::class, 'schedule'])->name('rooms.schedule');
+
+    // Agenda geral: todas as salas (ou as filtradas em ?rooms[]=...), mesmas regras da agenda da sala.
+    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
 
     Route::get('/users/search', [UserController::class, 'search']);
     
@@ -56,5 +66,14 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->g
 
     Route::apiResource('users', AdminUserController::class)->except(['store']);
     Route::apiResource('rooms', AdminRoomController::class);
+    // Fila de solicitações. pending-count vem antes do apiResource para não ser lido como {reservation}.
+    Route::get('/reservations/pending-count', [ReservationReviewController::class, 'pendingCount'])->name('reservations.pending-count');
+    Route::post('/reservations/{reservation}/approve', [ReservationReviewController::class, 'approve'])->name('reservations.approve');
+    Route::post('/reservations/{reservation}/reject', [ReservationReviewController::class, 'reject'])->name('reservations.reject');
+
     Route::apiResource('reservations', AdminReservationController::class)->except(['store']);
+
+    // Conteúdo do site (landing page e footer)
+    Route::get('/site-settings', [AdminSiteSettingController::class, 'show'])->name('site-settings.show');
+    Route::put('/site-settings', [AdminSiteSettingController::class, 'update'])->name('site-settings.update');
 });

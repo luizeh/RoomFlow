@@ -26,7 +26,7 @@ class ReservationRequest extends FormRequest
      *  - Criação: a reserva precisa começar no futuro.
      *  - Edição: o início pode já ter passado (ex.: estender uma reunião em andamento),
      *    mas o fim não pode ficar no passado.
-     * A regra de conflito de sala (after) vale para todos.
+     * A regra de conflito de sala (after) vale para todos e só considera reservas aprovadas.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -86,9 +86,10 @@ class ReservationRequest extends FormRequest
                     return;
                 }
 
-                $query = Reservation::where('room_id', $this->room_id)
-                    ->where('start_at', '<', $this->end_at)
-                    ->where('end_at', '>', $this->start_at);
+                // Só reservas aprovadas ocupam a sala. Pendentes não bloqueiam:
+                // várias pessoas podem solicitar o mesmo horário e o admin escolhe uma.
+                $query = Reservation::approved()
+                    ->overlapping((int) $this->room_id, $this->start_at, $this->end_at);
 
                 // Na edição, a própria reserva não conta como conflito
                 if ($this->route('reservation')) {

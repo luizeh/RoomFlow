@@ -43,6 +43,14 @@ class ReservationPolicy
         return $reservation->hasParticipant($user);
     }
 
+    /**
+     * Aprovar ou recusar solicitações: só admin (liberado no before()).
+     */
+    public function review(User $user, Reservation $reservation): bool
+    {
+        return false;
+    }
+
     public function delete(User $user, Reservation $reservation): bool
     {
         return $reservation->user_id === $user->id;

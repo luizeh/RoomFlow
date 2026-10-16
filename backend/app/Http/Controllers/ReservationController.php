@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Reservation;
 use App\Http\Requests\ReservationRequest;
+use App\Enums\ReservationStatus;
 
 // Reservas do usuário logado: as que ele criou (host) e as que ele foi convidado (participante).
 // A visão de todas as reservas fica no Admin\ReservationController.
+// Cliente não reserva direto: cria uma solicitação (pending) que o admin aprova ou recusa.
 class ReservationController extends Controller
 {
     /**
@@ -27,16 +29,24 @@ class ReservationController extends Controller
     }
 
     /**
-     * Cria uma reserva para o usuário logado, já com os participantes.
+     * Cria a solicitação de reserva do usuário logado, já com os participantes.
+     * Cliente: fica pendente até o admin aprovar. Admin: já nasce aprovada.
      */
     public function store(ReservationRequest $request)
     {
         Gate::authorize('create', Reservation::class);
 
-        $reservation = $request->user()->reservations()->create($request->reservationData());
+        $user = $request->user();
+
+        $reservation = $user->reservations()->create($request->reservationData());
         $reservation->participants()->sync($request->participantIds() ?? []);
 
-        return response()->json($reservation, 201);
+        if ($user->role === 'admin') {
+            // Aprovar recusa as pendentes do mesmo horário; os donos delas recebem e-mail
+            $reservation->approve($user)->each->notifyOwner();
+        }
+
+        return response()->json($reservation->refresh(), 201);
     }
 
     /**
@@ -58,15 +68,24 @@ class ReservationController extends Controller
 
     /**
      * Atualiza uma reserva (só o host). Os participantes só mudam se a lista vier na requisição.
+     * Se o cliente mudar sala ou horário, a reserva volta para a fila de aprovação.
      */
     public function update(ReservationRequest $request, Reservation $reservation)
     {
         Gate::authorize('update', $reservation);
 
-        $reservation->update($request->reservationData());
+        $reservation->fill($request->reservationData());
+        $scheduleChanged = $reservation->isDirty(['room_id', 'start_at', 'end_at']);
+        $reservation->save();
 
         if ($request->participantIds() !== null) {
             $reservation->participants()->sync($request->participantIds());
+        }
+
+        $isAdmin = $request->user()->role === 'admin';
+
+        if ($scheduleChanged && ! $isAdmin && $reservation->status !== ReservationStatus::Pending) {
+            $reservation->markPending();
         }
 
         return response()->json($reservation);

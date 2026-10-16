@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\Validator;
 
 /**
- * Período da agenda de uma sala: ?start=2026-10-05&end=2026-10-12
+ * Período da agenda de uma sala ou da agenda geral: ?start=2026-10-05&end=2026-10-12
  * (o mesmo intervalo que a agenda do frontend está mostrando).
  */
 class RoomScheduleRequest extends FormRequest
@@ -31,6 +31,9 @@ class RoomScheduleRequest extends FormRequest
         return [
             'start' => ['required', 'date'],
             'end' => ['required', 'date', 'after:start'],
+            // Só na agenda geral: filtra as salas (sem o campo = todas)
+            'rooms' => ['sometimes', 'array'],
+            'rooms.*' => ['integer', 'exists:rooms,id'],
         ];
     }
 

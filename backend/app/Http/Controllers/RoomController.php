@@ -30,50 +30,29 @@ class RoomController extends Controller
     /**
      * Agenda da sala: reservas que caem no período pedido (?start=...&end=...).
      *
-     * Usuário comum vê só "ocupado" nas reservas dos outros (sem nome, e-mail ou id);
-     * nas próprias reservas vem o id e is_mine = true.
-     * Admin vê o nome de quem reservou em todas.
+     * Usuário comum vê só "ocupado" nas reservas aprovadas dos outros (sem nome, e-mail ou id);
+     * nas próprias reservas e nos convites vem o id, o título e o status.
+     * Admin vê todas (aprovadas e pendentes) com o nome de quem reservou.
+     * O formato de cada item fica em Reservation::toScheduleItem().
      */
     public function schedule(RoomScheduleRequest $request, Room $room)
     {
         Gate::authorize('view', $room);
 
         $user = $request->user();
-        $isAdmin = $user->role === 'admin';
 
         // Reserva entra se começa antes do fim do período e termina depois do início
         // (pega também as que atravessam o começo ou o fim do período).
         $reservations = $room->reservations()
-        ->with(['user:id,name','participants:id',])
+            ->visibleInScheduleTo($user)
+            ->with(['user:id,name', 'participants:id'])
             ->where('start_at', '<', $request->date('end'))
             ->where('end_at', '>', $request->date('start'))
             ->orderBy('start_at')
             ->get();
 
-        $schedule = $reservations->map(function (Reservation $reservation) use ($user, $isAdmin) {
-            $isMine = $reservation->user()->is($user);
-            $isParticipant = $reservation->participants->contains('id', $user->id);
-            $canSee = $isMine || $isParticipant || $isAdmin;
-
-            $item = [
-                'id' => $canSee ? $reservation->id : null,
-                'title' => $canSee ? $reservation->title : null,
-                'start_at' => $reservation->start_at->format('Y-m-d H:i:s'),
-                'end_at' => $reservation->end_at->format('Y-m-d H:i:s'),
-                'is_mine' => $isMine,
-                'is_participant' => $isParticipant,
-            ];
-
-            if ($isAdmin) {
-                $item['user'] = [
-                    'id' => $reservation->user->id,
-                    'name' => $reservation->user->name,
-                ];
-            }
-
-            return $item;
-        });
-
-        return response()->json($schedule);
+        return response()->json(
+            $reservations->map(fn (Reservation $reservation) => $reservation->toScheduleItem($user))
+        );
     }
 }
