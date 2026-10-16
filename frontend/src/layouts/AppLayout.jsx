@@ -31,7 +31,7 @@ export default function AppLayout() {
         <div className="app-layout">
             <header className="app-header">
                 <div className="app-header-inner">
-                    <Link to="/rooms" className="brand">
+                    <Link to="/" className="brand">
                         <i className="fa-regular fa-calendar-check" aria-hidden="true"></i>
                         <span><strong>Room</strong>Flow</span>
                     </Link>

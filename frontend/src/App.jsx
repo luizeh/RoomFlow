@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import Landing from './pages/landing/Landing';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Rooms from './pages/rooms/Rooms';
@@ -24,7 +25,8 @@ import AdminLayout from './layouts/AdminLayout';
 function App() {
     return (
         <Routes>
-            <Route path="/" element={<Navigate to="/rooms" replace />} />
+            {/* Landing page: tela cheia, sem layout */}
+            <Route path="/" element={<Landing />} />
 
             {/* Autenticação: telas em tela cheia, sem layout */}
             <Route path="/login" element={<Login />} />
